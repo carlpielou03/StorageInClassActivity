@@ -81,7 +81,10 @@ class MainActivity : AppCompatActivity() {
         val url = "https://xkcd.com/$comicId/info.0.json"
         requestQueue.add (
             JsonObjectRequest(url
-                , {showComic(it)}
+                , {
+                    showComic(it)
+                    saveComic(it)
+                }
                 , {}
             )
         )
@@ -92,14 +95,12 @@ class MainActivity : AppCompatActivity() {
         titleTextView.text = comicObject.getString("title")
         descriptionTextView.text = comicObject.getString("alt")
         Picasso.get().load(comicObject.getString("img")).into(comicImageView)
-        saveComic(comicObject)
     }
 
     // Implement this function
     private fun saveComic(comicObject: JSONObject) {
         try {
             val outputStream = FileOutputStream(file)
-            Log.d("Comic Object: ", comicObject.toString())
             outputStream.write(comicObject.toString().toByteArray())
             outputStream.close()
         } catch (e: Exception) {
